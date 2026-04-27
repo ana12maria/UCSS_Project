@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="UCSS.Core/UCSS.Core.csproj" Id="0647a058-25ab-4845-9573-422f76e0f760" />
+  <Project Path="UCSS.Data/UCSS.Data.csproj" Id="d41b6769-d185-4731-9335-52d9c1e0a99e" />
+  <Project Path="UCSS.Web/UCSS.Web.csproj" Id="94be3525-8ee2-471c-a69a-a17f0cd96d60" />
+</Solution>
