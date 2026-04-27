@@ -16,7 +16,7 @@
                 hasConflict = false;
             }
             else
-            {
+            { 
                 /* Simulam o verificare: daca profesorul are curs lunea la ora 8 */
                 if (day == "Monday" && timeSlot == 8)
                 {
