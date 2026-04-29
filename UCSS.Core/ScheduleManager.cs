@@ -1,7 +1,8 @@
-﻿using UCSS.Data;
-namespace UCSS.Core 
-    
-     {
+﻿using System.Collections.Generic;
+using UCSS.Data;
+
+namespace UCSS.Core
+{
     /* Aceasta clasa gestioneaza logica de verificare a suprapunerilor in orar */
     public class ScheduleManager
     {
@@ -28,6 +29,5 @@ namespace UCSS.Core
 
             return hasConflict;
         }
-        
     }
 }
