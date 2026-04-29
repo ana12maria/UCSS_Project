@@ -1,34 +1,33 @@
-﻿namespace UCSS.Core
-{
+﻿using UCSS.Data;
+namespace UCSS.Core 
+    
+     {
     /* Aceasta clasa gestioneaza logica de verificare a suprapunerilor in orar */
     public class ScheduleManager
     {
         /* Functie care verifica daca un profesor este deja ocupat intr-un anumit interval */
-        public bool DetectTeacherConflict(int teacherId, string day, int timeSlot)
+        public bool DetectTeacherConflict(int teacherId, string day, int startTime, int endTime, List<Schedule> existingSchedules)
         {
-            /* Initializarea obligatorie a variabilelor cu o valoare de pornire */
+            // Presupunem că nu avem conflict la început
             bool hasConflict = false;
 
-            /* Regula 1: Acolade obligatorii la IF, chiar si pentru o singura linie */
-            /* Regula 5: Este interzisa folosirea comenzii switch, folosim if-else */
-            if (teacherId == 0)
+            foreach (var existing in existingSchedules)
             {
-                hasConflict = false;
-            }
-            else
-            { 
-                /* Simulam o verificare: daca profesorul are curs lunea la ora 8 */
-                if (day == "Monday" && timeSlot == 8)
+                // Verificăm dacă e același profesor în aceeași zi
+                if (existing.TeacherId == teacherId && existing.Day == day)
                 {
-                    hasConflict = true;
-                }
-                else
-                {
-                    hasConflict = false;
+                    // Verificăm dacă orele se suprapun
+                    // Regula: (Start1 < End2) ȘI (End1 > Start2)
+                    if (startTime < existing.EndTime && endTime > existing.StartTime)
+                    {
+                        hasConflict = true;
+                        break; // Am găsit un conflict, ne oprim
+                    }
                 }
             }
 
             return hasConflict;
         }
+        
     }
 }

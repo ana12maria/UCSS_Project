@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UCSS.Data\UCSS.Data.csproj" />
+  </ItemGroup>
+
 </Project>
