@@ -6,5 +6,6 @@
         public string Day { get; set; }
         public int StartTime { get; set; }
         public int EndTime { get; set; }
+        public int RoomId { get; set; }
     }
 }

@@ -29,5 +29,24 @@ namespace UCSS.Core
 
             return hasConflict;
         }
+    
+
+    public bool DetectRoomConflict(int roomId, string day, int startTime, int endTime, List<Schedule> existingSchedules)
+        {
+            foreach (var existing in existingSchedules)
+            {
+                // Verificăm dacă e aceeași sală în aceeași zi
+                if (existing.RoomId == roomId && existing.Day == day)
+                {
+                    // Aceeași logică de suprapunere orară
+                    if (startTime < existing.EndTime && endTime > existing.StartTime)
+                    {
+                        return true; // Conflict de sală!
+                    }
+                }
+            }
+            return false;
+        }
     }
+
 }
