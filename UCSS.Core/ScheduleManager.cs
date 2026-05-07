@@ -29,5 +29,35 @@ namespace UCSS.Core
 
             return hasConflict;
         }
+
+        public bool DetectRoomConflict(int roomId, string day, int startTime, int endTime, List<Schedule> existingSchedules)
+        {
+            foreach (var existing in existingSchedules)
+            {
+                if (existing.RoomId == roomId && existing.Day == day)
+                {
+                    if (startTime < existing.EndTime && endTime > existing.StartTime)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    
+    public bool DetectGroupConflict(string groupName, string day, int startTime, int endTime, List<Schedule> existingSchedules)
+        {
+            foreach (var existing in existingSchedules)
+            {
+                if (existing.GroupName == groupName && existing.Day == day)
+                {
+                    if (startTime < existing.EndTime && endTime > existing.StartTime)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }

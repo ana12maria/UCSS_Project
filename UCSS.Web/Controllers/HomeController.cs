@@ -1,25 +1,41 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using UCSS.Web.Models;
+using System.Collections.Generic;
+// Aici aducem celelalte proiecte ca să nu mai primim erori:
+using UCSS.Data;
+using UCSS.Core;
 
-namespace UCSS.Web.Controllers
+namespace UCSS.Web.Controllers // (Dacă la tine namespace-ul are alt nume, lasă-l pe al tău)
 {
     public class HomeController : Controller
     {
+        // 1. "Angajăm" Creierul (Managerul) ca să îl putem folosi mai jos!
+        private ScheduleManager _scheduleManager = new ScheduleManager();
+
+        // 2. Asta e pagina principală
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        // 3. Asta e funcția noastră nouă pentru butonul de Salvare
+        [HttpPost]
+        public IActionResult AdaugaOrar(int teacherId, int roomId, string subject, string groupName, string day, int startTime, int endTime)
         {
-            return View();
-        }
+            // Creăm o listă goală deocamdată (până ne legăm la baza de date reală)
+            var orarExistent = new List<Schedule>();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            // Verificăm conflictele:
+            if (_scheduleManager.DetectTeacherConflict(teacherId, day, startTime, endTime, orarExistent))
+                return BadRequest("Eroare: Profesorul are deja un curs!");
+
+            if (_scheduleManager.DetectRoomConflict(roomId, day, startTime, endTime, orarExistent))
+                return BadRequest("Eroare: Sala este ocupată!");
+
+            if (_scheduleManager.DetectGroupConflict(groupName, day, startTime, endTime, orarExistent))
+                return BadRequest("Eroare: Grupa are deja curs!");
+
+            // Dacă trece de toate IF-urile, e de bine!
+            return Ok("Succes! Orarul a fost salvat fără conflicte.");
         }
     }
 }
