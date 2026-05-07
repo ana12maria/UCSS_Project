@@ -1,67 +1,31 @@
 # UCSS - University Course Scheduling System
 
-This project is a professional web-based application designed to manage and validate university course schedules. It is built using **ASP.NET Core MVC** and follows a robust **N-Layered Architecture**.
+This project is a web-based application built using **ASP.NET Core MVC** designed to manage and validate university course schedules.
 
-## 🏛️ System Architecture (Detailed Layered Approach)
+## 🏗️ General Architecture (MVC Pattern)
 
-The following diagram illustrates the high-level architecture of the UCSS project, showing the separation of concerns between the presentation, business logic, and data persistence layers.
+The application follows the **Model-View-Controller (MVC)** architectural pattern, which separates the application into three main components:
 
-```mermaid
-graph TB
-    %% Defining the Layers
-    subgraph Layer1 ["View Layer - Frontend"]
-        direction LR
-        V1["Schedule Dashboard<br>(Bootstrap/Razor)"]
-        V2["Input Forms<br>(Schedule Creation)"]
-        V3["Resource Management<br>(UI Components)"]
-    end
 
-    subgraph Layer2 ["Controller Layer - API/MVC"]
-        direction LR
-        C1["ScheduleController<br>(HTTP POST/GET)"]
-        C2["ConflictController<br>(Validation Endpoint)"]
-    end
 
-    subgraph Layer3 ["Service Layer - Business Logic"]
-        direction TB
-        subgraph SecurityMod ["Security Module"]
-            Auth["Auth & Identity Service"]
-        end
-        
-        S1["ScheduleService<br>(Orchestrator)"]
-        
-        subgraph LogicMod ["Validation Core"]
-            S_Conf["ConflictDetectionService<br>(Rules Engine)"]
-            S_Res["ResourceValidator"]
-        end
-    end
+* **Model**: Represents the data and business logic (e.g., `Schedule` class and `ScheduleManager`).
+* **View**: The user interface (HTML/CSS) that displays data to the user.
+* **Controller**: The intermediary that handles user requests, interacts with the Model, and returns the appropriate View.
 
-    subgraph Layer4 ["Repository Layer - Data Access"]
-        direction LR
-        R1["ScheduleRepository<br>(EF Core)"]
-        R2["ResourceRepository<br>(Context Access)"]
-    end
-
-    subgraph Layer5 ["Data Layer - Persistence"]
-        direction LR
-        DB[("SQL Server DB")]
-        Tables["Schedules/Teachers/Rooms"]
-    end
-
-    %% Interactions and Data Flow
-    User(("User Browser")) -- "HTTPS/JSON Requests" --> C1
-    C1 --> S1
-    S1 --> S_Conf : "Invoke Validation"
-    S1 --> R1 : "Fetch/Save Data"
-    R1 --> DB : "Execute Queries"
-```
+### HTTP Methods Used
+| Method | Description | Usage in this Project |
+| :--- | :--- | :--- |
+| **GET** | Retrieve data from the server | Loading the "Add Schedule" page |
+| **POST** | Submit new data to the server | Saving a new course schedule and checking for conflicts |
+| **PUT** | Update existing data | (Future update) Editing an existing schedule |
+| **DELETE**| Remove data | (Future update) Canceling a scheduled course |
 
 ---
 
-## 📊 Technical Specifications
+## 📊 System Diagrams
 
-### 1. Class Structure
-The core domain model and the management logic are decoupled to ensure maintainability.
+### 1. Class Diagram
+This diagram shows the structure of the classes and the relationships between them.
 
 ```mermaid
 classDiagram
@@ -87,38 +51,34 @@ classDiagram
         +AdaugaOrar(...) IActionResult
     }
 
-    HomeController --> ScheduleManager : calls
-    ScheduleManager ..> Schedule : validates
+    HomeController --> ScheduleManager : uses
+    ScheduleManager ..> Schedule : processes
 ```
 
-### 2. Execution Flow (Sequence)
-How the system processes a new schedule request:
+### 2. Sequence Diagram
+This diagram illustrates the flow of information when a user saves a new schedule.
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant UI as Web Form
-    participant Ctrl as HomeController
-    participant Service as ScheduleManager
+    participant View as HTML Form (View)
+    participant Controller as HomeController
+    participant Manager as ScheduleManager
     
-    User->>UI: Submit Schedule Data
-    UI->>Ctrl: HTTP POST /Home/AdaugaOrar
-    Ctrl->>Service: Validate Constraints (Teacher, Room, Group)
-    Service-->>Ctrl: Validation Result (Success/Conflict)
-    alt No Conflict
-        Ctrl-->>UI: Display Success Message
-    else Conflict Found
-        Ctrl-->>UI: Display Error Notification
-    end
+    User->>View: Fills form & clicks "Save"
+    View->>Controller: POST Request
+    Controller->>Manager: Validate Teacher Conflict
+    Manager-->>Controller: No Conflict
+    Controller->>Manager: Validate Room Conflict
+    Manager-->>Controller: No Conflict
+    Controller-->>View: Return Success Message
+    View-->>User: Display "Success!"
 ```
 
 ---
 
-## 🚀 Key Features & Technologies
-- **Conflict Resolution Engine**: Advanced logic to prevent overlapping schedules for teachers, rooms, and student groups.
-- **MVC Pattern**: Strict separation between data (Model), UI (View), and logic (Controller).
-- **Modern UI**: Styled with Bootstrap for a responsive and interactive experience.
-- **HTTP Methods**: Full implementation of `GET` for viewing and `POST` for secure data submission.
-
----
-*Created for the UCSS University Project.*
+## 🛠️ Features
+- **Teacher Conflict Detection**: Ensures a teacher is not scheduled for two courses at the same time.
+- **Room Conflict Detection**: Prevents two courses from being held in the same room simultaneously.
+- **Group Conflict Detection**: Ensures a student group doesn't have overlapping classes.
+- **Modern UI**: Interactive web interface built with Bootstrap.
