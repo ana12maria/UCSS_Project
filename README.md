@@ -9,47 +9,47 @@ The following diagram illustrates the high-level architecture of the UCSS projec
 ```mermaid
 graph TB
     %% Defining the Layers
-    subgraph Layer1 [View Layer - Frontend]
+    subgraph Layer1 ["View Layer - Frontend"]
         direction LR
-        V1[Schedule Dashboard<br><i>(Bootstrap/Razor)</i>]
-        V2[Input Forms<br><i>(Schedule Creation)</i>]
-        V3[Resource Management<br><i>(UI Components)</i>]
+        V1["Schedule Dashboard<br>(Bootstrap/Razor)"]
+        V2["Input Forms<br>(Schedule Creation)"]
+        V3["Resource Management<br>(UI Components)"]
     end
 
-    subgraph Layer2 [Controller Layer - API/MVC]
+    subgraph Layer2 ["Controller Layer - API/MVC"]
         direction LR
-        C1[ScheduleController<br><i>(HTTP POST/GET)</i>]
-        C2[ConflictController<br><i>(Validation Endpoint)</i>]
+        C1["ScheduleController<br>(HTTP POST/GET)"]
+        C2["ConflictController<br>(Validation Endpoint)"]
     end
 
-    subgraph Layer3 [Service Layer - Business Logic]
+    subgraph Layer3 ["Service Layer - Business Logic"]
         direction TB
-        subgraph SecurityMod [Security Module]
-            Auth[Auth & Identity Service]
+        subgraph SecurityMod ["Security Module"]
+            Auth["Auth & Identity Service"]
         end
         
-        S1[ScheduleService<br><i>(Orchestrator)</i>]
+        S1["ScheduleService<br>(Orchestrator)"]
         
-        subgraph LogicMod [Validation Core]
-            S_Conf[<b>ConflictDetectionService</b><br><i>(Rules Engine)</i>]
-            S_Res[ResourceValidator]
+        subgraph LogicMod ["Validation Core"]
+            S_Conf["ConflictDetectionService<br>(Rules Engine)"]
+            S_Res["ResourceValidator"]
         end
     end
 
-    subgraph Layer4 [Repository Layer - Data Access]
+    subgraph Layer4 ["Repository Layer - Data Access"]
         direction LR
-        R1[ScheduleRepository<br><i>(EF Core)</i>]
-        R2[ResourceRepository<br><i>(Context Access)</i>]
+        R1["ScheduleRepository<br>(EF Core)"]
+        R2["ResourceRepository<br>(Context Access)"]
     end
 
-    subgraph Layer5 [Data Layer - Persistence]
+    subgraph Layer5 ["Data Layer - Persistence"]
         direction LR
-        DB[(SQL Server DB)]
-        Tables[Schedules/Teachers/Rooms]
+        DB[("SQL Server DB")]
+        Tables["Schedules/Teachers/Rooms"]
     end
 
     %% Interactions and Data Flow
-    User((User Browser)) -- "HTTPS/JSON Requests" --> C1
+    User(("User Browser")) -- "HTTPS/JSON Requests" --> C1
     C1 --> S1
     S1 --> S_Conf : "Invoke Validation"
     S1 --> R1 : "Fetch/Save Data"
